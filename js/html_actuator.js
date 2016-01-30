@@ -85,7 +85,9 @@ HTMLActuator.prototype.addTile = function (tile) {
 
   // Add the inner part of the tile to the wrapper
   wrapper.appendChild(inner);
-
+  wrapper.setAttribute('px', position.x);
+  wrapper.setAttribute('py', position.y);
+  
   // Put the tile on the board
   this.tileContainer.appendChild(wrapper);
 };
