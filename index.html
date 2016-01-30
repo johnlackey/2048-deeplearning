@@ -21,6 +21,7 @@
     <div class="heading">
       <h1 class="title">2048</h1>
       <div class="scores-container">
+        <div class="key-container">""</div>
         <div class="score-container">0</div>
         <div class="best-container">0</div>
       </div>
@@ -146,7 +147,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
     
     function gofast() {
       window.clearInterval(current_interval_id);
-      current_interval_id = setInterval(tick, 1000);
+      //current_interval_id = setInterval(tick, 1000);
       skipdraw = false;
       simspeed = 2;
     }
@@ -158,6 +159,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
       w.agents = [new Agent()];
       
       gofast();
+      tick();
     }
     var current_interval_id;
   </script>

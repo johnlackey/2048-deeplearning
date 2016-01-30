@@ -2,6 +2,7 @@ function World() {
   this.agents = [];
   //this.W = canvas.width;
   //this.H = canvas.height;
+  this.keyContainer   = document.querySelector(".key-container");
   
   this.clock = 0;
   
@@ -100,10 +101,13 @@ World.prototype = {
     for(var i=0,n=this.agents.length;i<n;i++) {
       var a = this.agents[i];
       var key = a.key;
+      this.keyContainer.textContent = key;
       //var keyCode = key ? key.charCodeAt(0) : 0;
-      var keyEvent = new KeyboardEvent("keydown", {key : key, char : key, shiftKey: false});
-      document.dispatchEvent(keyEvent);
-      //a.op = a.p; // back up old position
+      //var keyEvent = new KeyboardEvent("keydown", {key: 'U+0041', char : 'a', shiftKey: false});
+      //document.dispatchEvent(keyEvent);
+      //var event = document.createEvent( 'KeyboardEvent' );
+      //event.initKeyboardEvent( 'keydown', true, false, null, 0, false, 0, false, 65, 0 );
+      //document.dispatchEvent( event );      //a.op = a.p; // back up old position
       //a.oangle = a.angle; // and angle
       
       // steer the agent according to outputs of wheel velocities
