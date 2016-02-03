@@ -85,8 +85,9 @@
     Created by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli.</a> Based on <a href="https://itunes.apple.com/us/app/1024!/id823499224" target="_blank">1024 by Veewo Studio</a> and conceptually similar to <a href="http://asherv.com/threes/" target="_blank">Threes by Asher Vollmer.</a>
     </p>
   </div>
-   <textarea id="qspec" style="width:100%; height:200px;">var num_inputs = 27; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
-var num_actions = 5; // 5 possible angles agent can turn
+   <textarea id="qspec" style="width:100%; height:200px;">
+var num_inputs = 16; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
+var num_actions = 4; // 5 possible angles agent can turn
 var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
 var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
 
@@ -118,6 +119,12 @@ opt.tdtrainer_options = tdtrainer_options;
 
 var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
    </textarea>
+   <h1>State Visualizations</h1>
+   
+   <div><b>Left</b>: Current input state (quite a useless thing to look at). <b>Right</b>: Average reward over time (this should go up as agent becomes better on average at collecting rewards)</div>
+   <canvas id="vis_canvas" width="350" height="150"></canvas>
+   <canvas id="graph_canvas" width="350" height="150"></canvas><br>
+   <canvas id="net_canvas" width="700" height="200"></canvas><br>
 
   <script src="js/bind_polyfill.js"></script>
   <script src="js/classlist_polyfill.js"></script>
@@ -128,26 +135,101 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
   <script src="js/tile.js"></script>
   <script src="js/local_storage_manager.js"></script>
   <script src="js/game_manager.js"></script>
+  <script>
+    var keyboardInputManager = new KeyboardInputManager;
+  </script>
   <script src="js/application.js"></script>
   <script src="js/world.js"></script>
   <script src="js/agent.js"></script>
   <script src="js/convnet.js"></script>
   <script src="js/deepqlearn.js"></script>
-  <script src="js/util.js"></script>
+  <script src="js/util.js"></script> 
+  <script src="js/vis.js"></script>
   <script>
+    function draw_net() {
+      if(simspeed <=1) {
+        // we will always draw at these speeds
+      } else {
+        if(w.clock % 10 !== 0) return;  // do this sparingly 50
+      }
+      
+      var canvas = document.getElementById("net_canvas");
+      var ctx = canvas.getContext("2d");
+      var W = canvas.width;
+      var H = canvas.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var L = w.agents[0].brain.value_net.layers;
+      var dx = (W - 50)/L.length;
+      var x = 10;
+      var y = 40;
+      ctx.font="12px Verdana";
+      ctx.fillStyle = "rgb(0,0,0)";
+      ctx.fillText("Value Function Approximating Neural Network:", 10, 14);
+      for(var k=0;k<L.length;k++) {
+        if(typeof(L[k].out_act)==='undefined') continue; // maybe not yet ready
+        var kw = L[k].out_act.w;
+        var n = kw.length;
+        var dy = (H-50)/n;
+        ctx.fillStyle = "rgb(0,0,0)";
+        ctx.fillText(L[k].layer_type + "(" + n + ")", x, 35);
+        for(var q=0;q<n;q++) {
+          var v = Math.floor(kw[q]*100);
+          if(v >= 0) ctx.fillStyle = "rgb(0,0," + v + ")";
+          if(v < 0) ctx.fillStyle = "rgb(" + (-v) + ",0,0)";
+          ctx.fillRect(x,y,10,10);
+          y += 12;
+          if(y>H-25) { y = 40; x += 12};
+        }
+        x += 50;
+        y = 40;
+      }
+    }
+    
+    var reward_graph = new cnnvis.Graph();
+    
+    function draw_stats() {
+      var canvas = document.getElementById("vis_canvas");
+      var ctx = canvas.getContext("2d");
+      var W = canvas.width;
+      var H = canvas.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var a = w.agents[0];
+      var b = a.brain;
+      var netin = b.last_input_array;
+      ctx.strokeStyle = "rgb(0,0,0)";
+      //ctx.font="12px Verdana";
+      //ctx.fillText("Current state:",10,10);
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      for(var k=0,n=netin.length;k<n;k++) {
+        ctx.moveTo(10+k*12, 120);
+        ctx.lineTo(10+k*12, 120 - netin[k] * 1);
+      }
+      ctx.stroke();
+      
+      if(w.clock % 200 === 0) {
+        reward_graph.add(w.clock/200, b.average_reward_window.get_average());
+        var gcanvas = document.getElementById("graph_canvas");
+        reward_graph.drawSelf(gcanvas);
+      }
+    }
+    
     // Tick the world
     function tick() {
+      if (gameManager.isGameTerminated()) {
+        keyboardInputManager.emit('restart');
+      }
       w.tick();
-      //if(!skipdraw || w.clock % 50 === 0) {
-      //  draw();
-      //  draw_stats();
-      //  draw_net();
-      //}
+      if(!skipdraw || w.clock % 1 === 0) {
+        //draw();
+        draw_stats();
+        draw_net();
+      }
     }
     
     function gofast() {
       window.clearInterval(current_interval_id);
-      //current_interval_id = setInterval(tick, 1000);
+      current_interval_id = setInterval(tick, 0);
       skipdraw = false;
       simspeed = 2;
     }
@@ -157,9 +239,10 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
       
       w = new World();
       w.agents = [new Agent()];
+        keyboardInputManager.emit('restart');
       
       gofast();
-      tick();
+      //tick();
     }
     var current_interval_id;
   </script>

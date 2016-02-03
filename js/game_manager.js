@@ -1,6 +1,6 @@
 function GameManager(size, InputManager, Actuator, StorageManager) {
   this.size           = size; // Size of the grid
-  this.inputManager   = new InputManager;
+  this.inputManager   = InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
 
@@ -95,7 +95,7 @@ GameManager.prototype.actuate = function () {
     bestScore:  this.storageManager.getBestScore(),
     terminated: this.isGameTerminated()
   });
-  tick();
+  //tick();
 };
 
 // Represent the current game as an object

@@ -5,6 +5,8 @@ function Agent() {
   //this.p = new Vec(50, 50);
   //this.op = this.p; // old position
   //this.angle = 0; // direction facing
+  this.scoreContainer   = document.querySelector(".score-container");
+  this.old_score = 0;
   
   this.actions = [];
   this.actions.push('w');
@@ -53,9 +55,9 @@ Agent.prototype = {
     var tiles         = tileContainer.getElementsByClassName("tile");
     var num_tiles = tiles.length;
     for (var i=0;i<num_tiles;i++) {
-      var x = tiles[i].getAttribute("px");
-      var y = tiles[i].getAttribute("py");
-      var value = tiles[i].textContent;
+      var x = parseInt(tiles[i].getAttribute("px"));
+      var y = parseInt(tiles[i].getAttribute("py"));
+      var value = parseInt(tiles[i].textContent);
       input_array[x * 4 + y] = value;
     }
     // get action from brain
@@ -72,25 +74,31 @@ Agent.prototype = {
   backward: function() {
     // in backward pass agent learns.
     // compute reward 
-    var proximity_reward = 0.0;
-    var num_eyes = this.eyes.length;
-    for(var i=0;i<num_eyes;i++) {
-      var e = this.eyes[i];
-      // agents dont like to see walls, especially up close
-      proximity_reward += e.sensed_type === 0 ? e.sensed_proximity/e.max_range : 1.0;
+    var new_score = parseInt(this.scoreContainer.textContent);
+    var score_reward = 0;
+    if (new_score > 0 && this.old_score > 0) {
+      score_reward = new_score - this.old_score;
     }
-    proximity_reward = proximity_reward/num_eyes;
-    proximity_reward = Math.min(1.0, proximity_reward * 2);
+    this.old_score = new_score;
+    
+    //var num_eyes = this.eyes.length;
+    //for(var i=0;i<num_eyes;i++) {
+    //  var e = this.eyes[i];
+    //  // agents dont like to see walls, especially up close
+    //  proximity_reward += e.sensed_type === 0 ? e.sensed_proximity/e.max_range : 1.0;
+    //}
+    //proximity_reward = proximity_reward/num_eyes;
+    //proximity_reward = Math.min(1.0, proximity_reward * 2);
     
     // agents like to go straight forward
     var forward_reward = 0.0;
-    if(this.actionix === 0 && proximity_reward > 0.75) forward_reward = 0.1 * proximity_reward;
+    //if(this.actionix === 0 && proximity_reward > 0.75) forward_reward = 0.1 * proximity_reward;
     
     // agents like to eat good things
     var digestion_reward = this.digestion_signal;
     this.digestion_signal = 0.0;
     
-    var reward = proximity_reward + forward_reward + digestion_reward;
+    var reward = score_reward;
     
     // pass to brain for learning
     this.brain.backward(reward);
