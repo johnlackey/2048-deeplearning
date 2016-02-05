@@ -105,7 +105,7 @@ Agent.prototype = {
     if (change_tiles == 0 && score_reward == 0) {
       forward_reward = -1;
     } else {
-      forward_reward = -change_tiles / 16;
+      forward_reward = (8-change_tiles) / 16;
     }
     this.old_tiles = num_tiles;
     //if(this.actionix === 0 && proximity_reward > 0.75) forward_reward = 0.1 * proximity_reward;

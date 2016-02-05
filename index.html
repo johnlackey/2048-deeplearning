@@ -238,6 +238,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
         //draw();
         draw_stats();
         draw_net();
+        w.agents[0].brain.visSelf(document.getElementById('brain_info_div'));
       }
     }
     
