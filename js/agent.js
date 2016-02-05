@@ -8,6 +8,7 @@ function Agent() {
   this.scoreContainer   = document.querySelector(".score-container");
   this.old_score = 0;
   this.old_tiles = 0;
+  this.max_tile = 0;
   
   this.actions = [];
   this.actions.push('w');
@@ -58,10 +59,15 @@ Agent.prototype = {
     var tileContainer = document.querySelector(".tile-container");
     var tiles         = tileContainer.getElementsByClassName("tile");
     var num_tiles = tiles.length;
+    this.max = 0;
     for (var i=0;i<num_tiles;i++) {
       var x = parseInt(tiles[i].getAttribute("px"));
       var y = parseInt(tiles[i].getAttribute("py"));
-      var value = Math.log2(parseInt(tiles[i].textContent));
+      var value = (parseInt(tiles[i].textContent));
+      if (value > this.max) {
+        this.max = value;
+      }
+      value = Math.log2(value);
       input_array[x * 16 + y * 4 + value] = 1;
     }
     // get action from brain
@@ -81,9 +87,9 @@ Agent.prototype = {
     var new_score = parseInt(this.scoreContainer.textContent);
     var score_reward = 0;
     if (new_score > 0 && this.old_score > 0) {
-      score_reward = (new_score - this.old_score);
-      if (score_reward > 1) score_reward = Math.log2(score_reward) / 6;
-      if (score_reward > 1) score_reward = 1.0;
+      score_reward = (new_score - this.old_score) / (2 * this.max);
+      //if (score_reward > 1) score_reward = Math.log2(score_reward) / 6;
+      //if (score_reward > 1) score_reward = 1.0;
     }
     this.old_score = new_score;
     
@@ -104,9 +110,11 @@ Agent.prototype = {
     var change_tiles = num_tiles - this.old_tiles;
     if (change_tiles == 0 && score_reward == 0) {
       forward_reward = -1;
-    } else {
-      forward_reward = (8-change_tiles) / 16;
-    }
+    } else if (change_tiles < 0) {
+      forward_reward = 1;
+    } else if (change_tiles > 0) {
+      forward_reward = -1;
+    } 
     this.old_tiles = num_tiles;
     //if(this.actionix === 0 && proximity_reward > 0.75) forward_reward = 0.1 * proximity_reward;
     
