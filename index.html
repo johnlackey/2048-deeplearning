@@ -86,7 +86,9 @@
     </p>
   </div>
    <textarea id="qspec" style="width:100%; height:200px;">
-var num_inputs = 16; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
+var side_size = 4;
+var highest_value = 2048;
+var num_inputs = side_size * side_size * Math.log2(highest_value); // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
 var num_actions = 4; // 5 possible angles agent can turn
 var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
 var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
@@ -97,8 +99,8 @@ var network_size = num_inputs*temporal_window + num_actions*temporal_window + nu
 // to just insert simple relu hidden layers.
 var layer_defs = [];
 layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
-layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
-layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
+layer_defs.push({type:'fc', num_neurons: 300, activation:'relu'});
+layer_defs.push({type:'fc', num_neurons: 300, activation:'relu'});
 layer_defs.push({type:'regression', num_neurons:num_actions});
 
 // options for the Temporal Difference learner that trains the above net
@@ -124,7 +126,19 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
    <div><b>Left</b>: Current input state (quite a useless thing to look at). <b>Right</b>: Average reward over time (this should go up as agent becomes better on average at collecting rewards)</div>
    <canvas id="vis_canvas" width="350" height="150"></canvas>
    <canvas id="graph_canvas" width="350" height="150"></canvas><br>
-   <canvas id="net_canvas" width="700" height="200"></canvas><br>
+   <canvas id="net_canvas" width="2000" height="200"></canvas><br>
+   
+   <!--<canvas id="canvas" width="700" height="200"></canvas>-->
+   <div id="brain_info_div"><div><div>experience replay size: 4203<br>exploration epsilon: 0.9938883248730964<br>age: 4205<br>average Q-learning loss: 0.1062660890110729<br>smooth-ish reward: 0.7147144345566855<br></div></div></div>
+   
+   <h1>Controls</h1>
+   <button onclick="goveryfast()">Go very fast</button>
+   <button onclick="gofast()">Go fast</button>
+   <button onclick="gonormal()">Go normal speed</button>
+   <button onclick="goslow()">Go slow</button><br>
+   <button onclick="startlearn()">Start Learning</button>
+   <button onclick="stoplearn()">Stop Learning</button>
+   
 
   <script src="js/bind_polyfill.js"></script>
   <script src="js/classlist_polyfill.js"></script>
@@ -203,7 +217,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
       ctx.beginPath();
       for(var k=0,n=netin.length;k<n;k++) {
         ctx.moveTo(10+k*12, 120);
-        ctx.lineTo(10+k*12, 120 - netin[k] * 1);
+        ctx.lineTo(10+k*12, 120 - netin[k] * 100);
       }
       ctx.stroke();
       
