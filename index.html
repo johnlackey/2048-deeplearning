@@ -21,9 +21,11 @@
     <div class="heading">
       <h1 class="title">2048</h1>
       <div class="scores-container">
-        <div class="key-container">""</div>
         <div class="score-container">0</div>
         <div class="best-container">0</div>
+        <br />
+        <div class="value-container">""</div>
+        <div class="key-container">""</div>
       </div>
     </div>
 
@@ -85,46 +87,11 @@
     Created by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli.</a> Based on <a href="https://itunes.apple.com/us/app/1024!/id823499224" target="_blank">1024 by Veewo Studio</a> and conceptually similar to <a href="http://asherv.com/threes/" target="_blank">Threes by Asher Vollmer.</a>
     </p>
   </div>
-   <textarea id="qspec" style="width:100%; height:200px;">
-var side_size = 4;
-var highest_value = 2048;
-var num_inputs = side_size * side_size * Math.log2(highest_value); // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
-var num_actions = 4; // 5 possible angles agent can turn
-var temporal_window = 1; // amount of temporal memory. 0 = agent lives in-the-moment :)
-var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
-
-// the value function network computes a value of taking any of the possible actions
-// given an input state. Here we specify one explicitly the hard way
-// but user could also equivalently instead use opt.hidden_layer_sizes = [20,20]
-// to just insert simple relu hidden layers.
-var layer_defs = [];
-layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
-layer_defs.push({type:'fc', num_neurons: 300, activation:'relu'});
-layer_defs.push({type:'fc', num_neurons: 300, activation:'relu'});
-layer_defs.push({type:'regression', num_neurons:num_actions});
-
-// options for the Temporal Difference learner that trains the above net
-// by backpropping the temporal difference learning rule.
-var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_decay:0.01};
-
-var opt = {};
-opt.temporal_window = temporal_window;
-opt.experience_size = 30000;
-opt.start_learn_threshold = 1000;
-opt.gamma = 0.7;
-opt.learning_steps_total = 200000;
-opt.learning_steps_burnin = 3000;
-opt.epsilon_min = 0.05;
-opt.epsilon_test_time = 0.05;
-opt.layer_defs = layer_defs;
-opt.tdtrainer_options = tdtrainer_options;
-
-var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
-   </textarea>
+  <div>
    <h1>State Visualizations</h1>
    
    <div><b>Left</b>: Current input state (quite a useless thing to look at). <b>Right</b>: Average reward over time (this should go up as agent becomes better on average at collecting rewards)</div>
-   <canvas id="vis_canvas" width="350" height="150"></canvas>
+   <canvas id="vis_canvas" width="1000" height="150"></canvas>
    <canvas id="graph_canvas" width="350" height="150"></canvas><br>
    <canvas id="net_canvas" width="2000" height="200"></canvas><br>
    
@@ -139,7 +106,46 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
    <button onclick="startlearn()">Start Learning</button>
    <button onclick="stoplearn()">Stop Learning</button>
    
+   <textarea id="qspec" style="width:100%; height:200px;">
+var side_size = 4;
+var highest_value = 2048;
+var num_inputs = side_size * side_size; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
+var num_actions = 4; // 5 possible angles agent can turn
+var temporal_window = 0; // amount of temporal memory. 0 = agent lives in-the-moment :)
+//var future_reward = 10;
+var network_size = num_inputs*temporal_window + num_actions*temporal_window + num_inputs;
 
+// the value function network computes a value of taking any of the possible actions
+// given an input state. Here we specify one explicitly the hard way
+// but user could also equivalently instead use opt.hidden_layer_sizes = [20,20]
+// to just insert simple relu hidden layers.
+var layer_defs = [];
+layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:network_size});
+layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
+layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
+layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
+layer_defs.push({type:'fc', num_neurons: 50, activation:'relu'});
+layer_defs.push({type:'regression', num_neurons:num_actions});
+
+// options for the Temporal Difference learner that trains the above net
+// by backpropping the temporal difference learning rule.
+var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_decay:0.01};
+
+var opt = {};
+opt.temporal_window = temporal_window;
+opt.experience_size = 30000;
+opt.start_learn_threshold = 1000;
+opt.gamma = 0.9;
+opt.learning_steps_total = 200000;
+opt.learning_steps_burnin = 3000;
+opt.epsilon_min = 0.05;
+opt.epsilon_test_time = 0.05;
+opt.layer_defs = layer_defs;
+opt.tdtrainer_options = tdtrainer_options;
+
+var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
+   </textarea>
+  </div>
   <script src="js/bind_polyfill.js"></script>
   <script src="js/classlist_polyfill.js"></script>
   <script src="js/animframe_polyfill.js"></script>
@@ -187,7 +193,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
         ctx.fillStyle = "rgb(0,0,0)";
         ctx.fillText(L[k].layer_type + "(" + n + ")", x, 35);
         for(var q=0;q<n;q++) {
-          var v = Math.floor(kw[q]*100);
+          var v = Math.floor(kw[q]*1000);
           if(v >= 0) ctx.fillStyle = "rgb(0,0," + v + ")";
           if(v < 0) ctx.fillStyle = "rgb(" + (-v) + ",0,0)";
           ctx.fillRect(x,y,10,10);
@@ -217,7 +223,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
       ctx.beginPath();
       for(var k=0,n=netin.length;k<n;k++) {
         ctx.moveTo(10+k*12, 120);
-        ctx.lineTo(10+k*12, 120 - netin[k] * 100);
+        ctx.lineTo(10+k*12, 120 - netin[k] * 500);
       }
       ctx.stroke();
       
@@ -231,7 +237,12 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
     // Tick the world
     function tick() {
       if (gameManager.isGameTerminated()) {
-        keyboardInputManager.emit('restart');
+          gameTerminated = gameTerminated + 1;
+          if (gameTerminated > 2) {
+            keyboardInputManager.emit('restart');
+          }
+      } else {
+          gameTerminated = 0;
       }
       w.tick();
       if(!skipdraw || w.clock % 1 === 0) {
@@ -263,7 +274,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
     }
     function goslow() {
       window.clearInterval(current_interval_id);
-      current_interval_id = setInterval(tick, 200);
+      current_interval_id = setInterval(tick, 2000);
       skipdraw = false;
       simspeed = 0;
     }
@@ -302,7 +313,8 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
       w.agents = [new Agent()];
         keyboardInputManager.emit('restart');
       
-      gofast();
+      //gofast();
+      goslow();
       //tick();
     }
     var current_interval_id;

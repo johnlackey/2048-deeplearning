@@ -66,6 +66,7 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
     this.action_window = new Array(this.window_size);
     this.reward_window = new Array(this.window_size);
     this.net_window = new Array(this.window_size);
+    this.validMoves_window = new Array(this.window_size);
     
     // create [state -> value of all possible actions] modeling net for the value function
     var layer_defs = [];
@@ -136,16 +137,18 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
         }
       }
     },
-    policy: function(s) {
+    policy: function(s, validMoves) {
       // compute the value of doing any action in this state
       // and return the argmax action and its value
       var svol = new convnetjs.Vol(1, 1, this.net_inputs);
       svol.w = s;
       var action_values = this.value_net.forward(svol);
-      var maxk = 0; 
-      var maxval = action_values.w[0];
-      for(var k=1;k<this.num_actions;k++) {
-        if(action_values.w[k] > maxval) { maxk = k; maxval = action_values.w[k]; }
+      var maxk = -1; 
+      var maxval = -99999999999;
+      for(var k=0;k<this.num_actions;k++) {
+          if (validMoves[k]) {
+            if(action_values.w[k] > maxval) { maxk = k; maxval = action_values.w[k]; }
+          }
       }
       return {action:maxk, value:maxval};
     },
@@ -168,7 +171,7 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
       }
       return w;
     },
-    forward: function(input_array) {
+    forward: function(input_array, validMoves) {
       // compute forward (behavior) pass given the input neuron signals from body
       this.forward_passes += 1;
       this.last_input_array = input_array; // back this up
@@ -187,17 +190,23 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
         var rf = convnetjs.randf(0,1);
         if(rf < this.epsilon) {
           // choose a random action with epsilon probability
-          action = this.random_action();
+          action = {action:this.random_action()};
+          while (validMoves[action.action] == false) {
+              action = {action:this.random_action()};
+          }
         } else {
           // otherwise use our policy to make decision
-          var maxact = this.policy(net_input);
-          action = maxact.action;
+          var maxact = this.policy(net_input, validMoves);
+          action = maxact; //.action;
        }
       } else {
         // pathological case that happens first few iterations 
         // before we accumulate window_size inputs
         var net_input = [];
-        action = this.random_action();
+        action = {action:this.random_action()};
+        while (validMoves[action.action] == false) {
+            action = {action:this.random_action()};
+        }
       }
       
       // remember the state and action we took for backward pass
@@ -206,7 +215,10 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
       this.state_window.shift(); 
       this.state_window.push(input_array);
       this.action_window.shift(); 
-      this.action_window.push(action);
+      this.action_window.push(action.action);
+      this.validMoves_window.shift(); 
+      this.validMoves_window.push(validMoves);
+      
       
       return action;
     },
@@ -230,6 +242,7 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
         e.action0 = this.action_window[n-2];
         e.reward0 = this.reward_window[n-2];
         e.state1 = this.net_window[n-1];
+        e.validMoves1 = this.validMoves_window[n-1];
         if(this.experience.length < this.experience_size) {
           this.experience.push(e);
         } else {
@@ -248,8 +261,8 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
           var e = this.experience[re];
           var x = new convnetjs.Vol(1, 1, this.net_inputs);
           x.w = e.state0;
-          var maxact = this.policy(e.state1);
-          var r = e.reward0 + this.gamma * maxact.value;
+          var maxact = this.policy(e.state1, e.validMoves1);
+          var r = e.reward0 < 0 ? 0 : e.reward0 + this.gamma * maxact.value;
           var ystruct = {dim: e.action0, val: r};
           var loss = this.tdtrainer.train(x, ystruct);
           avcost += loss.loss;

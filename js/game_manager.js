@@ -267,6 +267,59 @@ GameManager.prototype.tileMatchesAvailable = function () {
   return false;
 };
 
+// Check for valid moves (more expensive check)
+GameManager.prototype.validMoves = function () {
+  var self = this;
+  var validMove = [false, false, false, false];
+
+  var tile;
+
+  if (!this.movesAvailable()) {
+      validMove = [true, true, true, true];
+      return validMove;
+  }
+  for (var x = 0; x < this.size; x++) {
+    for (var y = 0; y < this.size; y++) {
+      tile = this.grid.cellContent({ x: x, y: y });
+
+      if (tile) {
+        for (var direction = 0; direction < 4; direction++) {
+            if (validMove[direction] == false) {
+                var vector = self.getVector(direction);
+                var cell   = { x: x + vector.x, y: y + vector.y };
+
+                var other  = self.grid.cellContent(cell);
+
+                if (other && other.value === tile.value) {
+                    validMove[direction] = true;
+                    if (validMove.every(elem => elem)) {
+                        return validMove;
+                    }
+                }
+            }
+        }
+      } else {
+        for (var direction = 0; direction < 4; direction++) {
+            if (validMove[direction] == false) {
+                var vector = self.getVector(direction);
+                var cell   = { x: x - vector.x, y: y - vector.y };
+                var other  = self.grid.cellContent(cell);
+                if (other && other.value > 0) {
+                    validMove[direction] = true;
+                    if (validMove.every(elem => elem)) {
+                        return validMove;
+                    }
+                }
+            }
+        }          
+      }
+    }
+  }
+
+  return validMove;
+};
+
+
 GameManager.prototype.positionsEqual = function (first, second) {
   return first.x === second.x && first.y === second.y;
 };

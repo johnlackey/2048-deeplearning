@@ -64,7 +64,7 @@ h1.title {
   text-align: right;
 }
 
-.score-container, .best-container, .key-container {
+.score-container, .best-container, .key-container, .value-container {
   $height: 25px;
 
   position: relative;
@@ -116,6 +116,10 @@ h1.title {
 
 .key-container:after {
   content: "Key"
+}
+
+.value-container:after {
+  content: "Q"
 }
 
 p {
@@ -504,7 +508,7 @@ hr {
     margin: 0 auto;
   }
 
-  .score-container, .best-container, .key-container {
+  .score-container, .best-container, .key-container, .value-container {
     margin-top: 0;
     padding: 15px 10px;
     min-width: 40px;

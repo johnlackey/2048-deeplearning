@@ -3,6 +3,7 @@ function World() {
   //this.W = canvas.width;
   //this.H = canvas.height;
   this.keyContainer   = document.querySelector(".key-container");
+  this.valueContainer = document.querySelector(".value-container");
   
   this.clock = 0;
   
@@ -102,6 +103,7 @@ World.prototype = {
       var a = this.agents[i];
       var key = a.key;
       this.keyContainer.textContent = key;
+      this.valueContainer.textContent = Math.round(a.actionQ*1024);
       keyboardInputManager.emit('move', a.actionix);
       //var keyCode = key ? key.charCodeAt(0) : 0;
       //var keyEvent = new KeyboardEvent("keydown", {key: 'U+0041', char : 'a', shiftKey: false});
@@ -191,9 +193,11 @@ World.prototype = {
     //  this.items.push(newit);
     //}
     //
-    // agents are given the opportunity to learn based on feedback of their action on environment
-    for(var i=0,n=this.agents.length;i<n;i++) {
-      this.agents[i].backward();
-    }
+    //if (!gameManager.isGameTerminated()) {
+        // agents are given the opportunity to learn based on feedback of their action on environment
+        for(var i=0,n=this.agents.length;i<n;i++) {
+            this.agents[i].backward();
+        }
+    ///}
   }
 }
