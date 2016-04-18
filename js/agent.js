@@ -55,9 +55,13 @@ Agent.prototype = {
     //var dump = gamemanager.serialize();
     var dump = gameManager.serialize();
     var grid = dump.grid;
-    var input_array   = new Array(4 * 4);
-    for (var i=0;i<input_array.length;i++) {
-      input_array[i] = 0.0;
+    var input_array   = new Array(4 * 4 * 16);
+    for (var x=0;x<grid.size;x++) {
+        for (var y=0;y<grid.size;y++) {
+            for (var z=0;z<16;z++) {
+                input_array[x + (grid.size * (y + grid.size * z))] = 0.0;
+            }
+        }
     }
     //var tileContainer = document.querySelector(".tile-container");
     //var tiles         = tileContainer.getElementsByClassName("tile");
@@ -70,8 +74,10 @@ Agent.prototype = {
             if (value > this.max) {
                 this.max = value;
             }
-            //value = Math.log2(value);
-            input_array[x * 4 + y] = value / 1024;
+            if (value > 0) {
+                value = Math.log2(value);
+                input_array[x + (grid.size * (y + grid.size * value))] = 1;
+            }
         }
     }
     //for (var i=0;i<num_tiles;i++) {

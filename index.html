@@ -109,7 +109,7 @@
    <textarea id="qspec" style="width:100%; height:200px;">
 var side_size = 4;
 var highest_value = 2048;
-var num_inputs = side_size * side_size; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
+var num_inputs = side_size * side_size * 16; // 9 eyes, each sees 3 numbers (wall, green, red thing proximity)
 var num_actions = 4; // 5 possible angles agent can turn
 var temporal_window = 0; // amount of temporal memory. 0 = agent lives in-the-moment :)
 //var future_reward = 10;
@@ -133,13 +133,13 @@ var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_de
 
 var opt = {};
 opt.temporal_window = temporal_window;
-opt.experience_size = 30000;
+opt.experience_size = 300000;
 opt.start_learn_threshold = 1000;
-opt.gamma = 0.9;
+opt.gamma = 0.999;
 opt.learning_steps_total = 200000;
 opt.learning_steps_burnin = 3000;
-opt.epsilon_min = 0.05;
-opt.epsilon_test_time = 0.05;
+opt.epsilon_min = 0.005;
+opt.epsilon_test_time = 0.0005;
 opt.layer_defs = layer_defs;
 opt.tdtrainer_options = tdtrainer_options;
 
