@@ -74,7 +74,126 @@
 
       </div>
     </div>
+  </div>
 
+   <div>
+       <table border="1" style="text-align:right">
+           <tr>
+               <th></th>
+               <th>1</th>
+               <th>2/4/8/16</th>
+               <th>4/16/64/256</th>
+               <th>8/64/512/4096</th>
+               <th>16/256/4096</th>
+               <th>32/1024</th>
+               <th>64/4096</th>
+               <th>128</th>
+               <th>256</th>
+               <th>512</th>
+               <th>1024</th>
+               <th>2048</th>
+               <th>4096</th>
+               <th>8192</th>
+               <th>16384</th>
+               <th>32768</th>
+           </tr>
+           <tr>
+               <td>experience replay size:</td>
+               <td id="brain_0_0"></td>
+               <td id="brain_0_1"></td>
+               <td id="brain_0_2"></td>
+               <td id="brain_0_3"></td>
+               <td id="brain_0_4"></td>
+               <td id="brain_0_5"></td>
+               <td id="brain_0_6"></td>
+               <td id="brain_0_7"></td>
+               <td id="brain_0_8"></td>
+               <td id="brain_0_9"></td>
+               <td id="brain_0_10"></td>
+               <td id="brain_0_11"></td>
+               <td id="brain_0_12"></td>
+               <td id="brain_0_13"></td>
+               <td id="brain_0_14"></td>
+               <td id="brain_0_15"></td>
+           </tr>
+           <tr>
+               <td>exploration epsilon:</td>
+               <td id="brain_1_0"></td>
+               <td id="brain_1_1"></td>
+               <td id="brain_1_2"></td>
+               <td id="brain_1_3"></td>
+               <td id="brain_1_4"></td>
+               <td id="brain_1_5"></td>
+               <td id="brain_1_6"></td>
+               <td id="brain_1_7"></td>
+               <td id="brain_1_8"></td>
+               <td id="brain_1_9"></td>
+               <td id="brain_1_10"></td>
+               <td id="brain_1_11"></td>
+               <td id="brain_1_12"></td>
+               <td id="brain_1_13"></td>
+               <td id="brain_1_14"></td>
+               <td id="brain_1_15"></td>
+           </tr>
+           <tr>
+               <td>age:</td>
+               <td id="brain_2_0"></td>
+               <td id="brain_2_1"></td>
+               <td id="brain_2_2"></td>
+               <td id="brain_2_3"></td>
+               <td id="brain_2_4"></td>
+               <td id="brain_2_5"></td>
+               <td id="brain_2_6"></td>
+               <td id="brain_2_7"></td>
+               <td id="brain_2_8"></td>
+               <td id="brain_2_9"></td>
+               <td id="brain_2_10"></td>
+               <td id="brain_2_11"></td>
+               <td id="brain_2_12"></td>
+               <td id="brain_2_13"></td>
+               <td id="brain_2_14"></td>
+               <td id="brain_2_15"></td>
+           </tr>
+           <tr>
+               <td>average Q-learning loss:</td>
+               <td id="brain_3_0"></td>
+               <td id="brain_3_1"></td>
+               <td id="brain_3_2"></td>
+               <td id="brain_3_3"></td>
+               <td id="brain_3_4"></td>
+               <td id="brain_3_5"></td>
+               <td id="brain_3_6"></td>
+               <td id="brain_3_7"></td>
+               <td id="brain_3_8"></td>
+               <td id="brain_3_9"></td>
+               <td id="brain_3_10"></td>
+               <td id="brain_3_11"></td>
+               <td id="brain_3_12"></td>
+               <td id="brain_3_13"></td>
+               <td id="brain_3_14"></td>
+               <td id="brain_3_15"></td>
+           </tr>
+           <tr>
+               <td>smooth-ish reward:</td>
+               <td id="brain_4_0"></td>
+               <td id="brain_4_1"></td>
+               <td id="brain_4_2"></td>
+               <td id="brain_4_3"></td>
+               <td id="brain_4_4"></td>
+               <td id="brain_4_5"></td>
+               <td id="brain_4_6"></td>
+               <td id="brain_4_7"></td>
+               <td id="brain_4_8"></td>
+               <td id="brain_4_9"></td>
+               <td id="brain_4_10"></td>
+               <td id="brain_4_11"></td>
+               <td id="brain_4_12"></td>
+               <td id="brain_4_13"></td>
+               <td id="brain_4_14"></td>
+               <td id="brain_4_15"></td>
+           </tr>
+       </table>
+   </div>
     <p class="game-explanation">
       <strong class="important">How to play:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with the same number touch, they <strong>merge into one!</strong>
     </p>
@@ -86,7 +205,6 @@
     <p>
     Created by <a href="http://gabrielecirulli.com" target="_blank">Gabriele Cirulli.</a> Based on <a href="https://itunes.apple.com/us/app/1024!/id823499224" target="_blank">1024 by Veewo Studio</a> and conceptually similar to <a href="http://asherv.com/threes/" target="_blank">Threes by Asher Vollmer.</a>
     </p>
-  </div>
   <div>
    <h1>State Visualizations</h1>
    
@@ -96,7 +214,17 @@
    <canvas id="net_canvas" width="2000" height="200"></canvas><br>
    
    <!--<canvas id="canvas" width="700" height="200"></canvas>-->
-   <div id="brain_info_div"><div><div>experience replay size: 4203<br>exploration epsilon: 0.9938883248730964<br>age: 4205<br>average Q-learning loss: 0.1062660890110729<br>smooth-ish reward: 0.7147144345566855<br></div></div></div>
+   <div id="brain_info_div">
+       <div>
+           <div>
+               experience replay size: 4203<br>
+               exploration epsilon: 0.9938883248730964<br>
+               age: 4205<br>
+               average Q-learning loss: 0.1062660890110729<br>
+               smooth-ish reward: 0.7147144345566855<br>
+           </div>
+       </div>
+   </div>
    
    <h1>Controls</h1>
    <button onclick="goveryfast()">Go very fast</button>
@@ -133,7 +261,7 @@ var tdtrainer_options = {learning_rate:0.001, momentum:0.0, batch_size:64, l2_de
 
 var opt = {};
 opt.temporal_window = temporal_window;
-opt.experience_size = 300000;
+opt.experience_size = 30000;
 opt.start_learn_threshold = 1000;
 opt.gamma = 0.999;
 opt.learning_steps_total = 200000;
@@ -143,7 +271,10 @@ opt.epsilon_test_time = 0.0005;
 opt.layer_defs = layer_defs;
 opt.tdtrainer_options = tdtrainer_options;
 
-var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
+var brain = Array(16);
+for (i=0;i<16;i++) {
+    brain[i] = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
+}
    </textarea>
   </div>
   <script src="js/bind_polyfill.js"></script>
@@ -178,7 +309,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
       var W = canvas.width;
       var H = canvas.height;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      var L = w.agents[0].brain.value_net.layers;
+      var L = w.agents[0].brain[w.agents[0].maxPower].value_net.layers;
       var dx = (W - 50)/L.length;
       var x = 10;
       var y = 40;
@@ -214,7 +345,7 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
       var H = canvas.height;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       var a = w.agents[0];
-      var b = a.brain;
+      var b = a.brain[w.agents[0].maxPower];
       var netin = b.last_input_array;
       ctx.strokeStyle = "rgb(0,0,0)";
       //ctx.font="12px Verdana";
@@ -249,7 +380,16 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
         //draw();
         draw_stats();
         draw_net();
-        w.agents[0].brain.visSelf(document.getElementById('brain_info_div'));
+        w.agents[0].brain[w.agents[0].maxPower].visSelf(document.getElementById('brain_info_div'));
+        var brainValues = w.agents[0].brain[w.agents[0].maxPower].visSelfValues();
+        for (var k=0,n=brainValues.length;k<n;k++) {
+            var elemId = "brain_" + k + "_" + w.agents[0].maxPower;
+            var elem =document.getElementById(elemId);
+            elem.innerText = brainValues[k];
+        }
+        if (isNaN(brainValues[3])) {
+            w.agents[0].brain[w.agents[0].maxPower] = new deepqlearn.Brain(num_inputs, num_actions, opt);
+        }
       }
     }
     
@@ -294,10 +434,10 @@ var brain = new deepqlearn.Brain(num_inputs, num_actions, opt); // woohoo
     }
     
     function startlearn() {
-      w.agents[0].brain.learning = true;
+      w.agents[0].brain[0].learning = true;
     }
     function stoplearn() {
-      w.agents[0].brain.learning = false;
+      w.agents[0].brain[0].learning = false;
     }
     
     function reload() {

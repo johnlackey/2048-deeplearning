@@ -98,6 +98,7 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
     }
     this.value_net = new convnetjs.Net();
     this.value_net.makeLayers(layer_defs);
+    this.layer_defs = layer_defs;
     
     // and finally we need a Temporal Difference Learning trainer!
     var tdtrainer_options = {learning_rate:0.01, momentum:0.0, batch_size:64, l2_decay:0.01};
@@ -120,6 +121,10 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
     this.learning = true;
   }
   Brain.prototype = {
+    reset: function() {
+        this.value_net = new convnetjs.Net();
+        this.value_net.makeLayers(this.layer_defs);
+    },
     random_action: function() {
       // a bit of a helper function. It returns a random action
       // we are abstracting this away because in future we may want to 
@@ -289,6 +294,15 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
       brainvis.appendChild(desc);
       
       elt.appendChild(brainvis);
+    },
+    visSelfValues: function() {
+        var t = [];
+        t.push(this.experience.length);
+        t.push(this.epsilon.toFixed(5));
+        t.push(this.age);
+        t.push(this.average_loss_window.get_average().toFixed(5));
+        t.push(this.average_reward_window.get_average().toFixed(5));
+        return t;
     }
   }
   
