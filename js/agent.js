@@ -10,11 +10,7 @@ function Agent() {
   this.old_tiles = 0;
   this.max_tile = 0;
   this.old_max = 2;
-<<<<<<< HEAD
   this.brainPower = 128;
-=======
-  this.brainPower = 64;
->>>>>>> b3047257c22fd5db05c4e290308d711ba661d7ae
   
   this.actions = [];
   this.actions.push('w');
