@@ -124,6 +124,7 @@ var deepqlearn = deepqlearn || { REVISION: 'ALPHA' };
     reset: function() {
         this.value_net = new convnetjs.Net();
         this.value_net.makeLayers(this.layer_defs);
+        this.average_loss_window = new cnnutil.Window(1000, 10);
     },
     random_action: function() {
       // a bit of a helper function. It returns a random action

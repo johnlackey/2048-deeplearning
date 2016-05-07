@@ -80,22 +80,22 @@
        <table border="1" style="text-align:right">
            <tr>
                <th></th>
-               <th>1</th>
-               <th>2/4/8/16</th>
-               <th>4/16/64/256</th>
-               <th>8/64/512/4096</th>
-               <th>16/256/4096</th>
-               <th>32/1024</th>
-               <th>64/4096</th>
-               <th>128</th>
-               <th>256</th>
-               <th>512</th>
-               <th>1024</th>
-               <th>2048</th>
-               <th>4096</th>
-               <th>8192</th>
-               <th>16384</th>
-               <th>32768</th>
+               <th id="col0">1</th>
+               <th id="col1">2/4/8/16</th>
+               <th id="col2">4/16/64/256</th>
+               <th id="col3">8/64/512/4096</th>
+               <th id="col4">16/256/4096</th>
+               <th id="col5">32/1024</th>
+               <th id="col6">64/4096</th>
+               <th id="col7">128</th>
+               <th id="col8">256</th>
+               <th id="col9">512</th>
+               <th id="col10">1024</th>
+               <th id="col11">2048</th>
+               <th id="col12">4096</th>
+               <th id="col13">8192</th>
+               <th id="col14">16384</th>
+               <th id="col15">32768</th>
            </tr>
            <tr>
                <td>experience replay size:</td>
@@ -388,7 +388,7 @@ for (i=0;i<16;i++) {
             elem.innerText = brainValues[k];
         }
         if (isNaN(brainValues[3])) {
-            w.agents[0].brain[w.agents[0].maxPower] = new deepqlearn.Brain(num_inputs, num_actions, opt);
+            w.agents[0].brain[w.agents[0].maxPower].reset();
         }
       }
     }

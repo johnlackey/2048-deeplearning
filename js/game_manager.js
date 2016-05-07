@@ -49,6 +49,7 @@ GameManager.prototype.setup = function () {
     this.over        = false;
     this.won         = false;
     this.keepPlaying = false;
+    this.maxTile     = 2;
 
     // Add the initial tiles
     this.addStartTiles();
@@ -166,6 +167,10 @@ GameManager.prototype.move = function (direction) {
           // Update the score
           self.score += merged.value;
 
+          if (merged.value > self.maxTile) {
+              self.score += 2048;
+              self.maxTile = merged.value;
+          }
           // The mighty 2048 tile
           if (merged.value === 2048) self.won = true;
         } else {

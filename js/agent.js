@@ -10,6 +10,7 @@ function Agent() {
   this.old_tiles = 0;
   this.max_tile = 0;
   this.old_max = 2;
+  this.brainPower = 256;
   
   this.actions = [];
   this.actions.push('w');
@@ -17,6 +18,14 @@ function Agent() {
   this.actions.push('s');
   this.actions.push('a');
   
+  var colLabel = 1;
+  for (var k=0;k<16;k++) {
+      var elemId = "col" + k;
+      var elem =document.getElementById(elemId);
+      elem.innerText = colLabel;
+      colLabel *= this.brainPower;
+  }
+
   // properties
   //this.rad = 10;
   //this.eyes = [];
@@ -81,7 +90,7 @@ Agent.prototype = {
             }
         }
     }
-    this.maxPower = Math.ceil(Math.log2(this.max)/Math.log2(16));
+    this.maxPower = Math.ceil(Math.log2(this.max)/this.brainPower);
     //for (var i=0;i<num_tiles;i++) {
     //  var x = parseInt(tiles[i].getAttribute("px"));
     //  var y = parseInt(tiles[i].getAttribute("py"));
@@ -170,9 +179,9 @@ Agent.prototype = {
     //    forward_reward += this.position_v * 0 / divisor; //this.max * 32; //(1 - 1 / this.max);
     //    forward_reward += 1 / divisor; //this.max * 32; //(1 - 1 / this.max);
     } 
-    if (this.old_max < this.max) {
-        forward_reward = 1;
-    }
+    //if (this.old_max < this.max) {
+    //    forward_reward = 1;
+    //}
     this.old_max = this.max;
     this.old_tiles = num_tiles;
     //if(this.actionix === 0 && proximity_reward > 0.75) forward_reward = 0.1 * proximity_reward;
