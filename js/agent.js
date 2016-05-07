@@ -10,7 +10,11 @@ function Agent() {
   this.old_tiles = 0;
   this.max_tile = 0;
   this.old_max = 2;
+<<<<<<< HEAD
   this.brainPower = 128;
+=======
+  this.brainPower = 64;
+>>>>>>> b3047257c22fd5db05c4e290308d711ba661d7ae
   
   this.actions = [];
   this.actions.push('w');
@@ -90,7 +94,7 @@ Agent.prototype = {
             }
         }
     }
-    this.maxPower = Math.ceil(Math.log2(this.max)/this.brainPower);
+    this.maxPower = Math.ceil(Math.log2(this.max)/Math.log2(this.brainPower));
     //for (var i=0;i<num_tiles;i++) {
     //  var x = parseInt(tiles[i].getAttribute("px"));
     //  var y = parseInt(tiles[i].getAttribute("py"));
